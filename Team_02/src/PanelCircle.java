@@ -32,6 +32,8 @@ public class PanelCircle extends JPanel {
 			Shape objCircle = new Ellipse2D.Double(105, 60, 80, 80);
 			obj2D.draw(objCircle);
 			obj2D.fillOval(105+40-3, 60+40-3, 6, 6);
+			Connections c = new Connections();
+			c.DotToBarConnection(obj2D, 100, 120, 180, 200);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
@@ -44,6 +46,7 @@ public class PanelCircle extends JPanel {
 
 			ClickedShape objClickedShape = new ClickedShape();
 			objClickedShape.returnShape("Circle");
+
 		}
 	}
 }

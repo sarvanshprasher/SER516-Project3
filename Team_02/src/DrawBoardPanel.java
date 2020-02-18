@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.Graphics;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -13,7 +15,6 @@ public class DrawBoardPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public DrawBoardPanel() {
-
 		try {
 			add(new DrawShapeOnMouseClick());
 			setVisible(true);
