@@ -15,16 +15,10 @@ public class PanelTriangle extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private int X;
-	private int Y;
+	public static final int X = 120;
+	public static final int Y = 100;
 	
 	public PanelTriangle() {
-		new PanelTriangle(120, 100);
-	}
-	
-	public PanelTriangle(int X, int Y) {
-		this.X = X;
-		this.Y = Y;
 		addMouseListener(new PanelMouseListener());
 		JPanel objTrianglePane = new JPanel();
 		repaint();
@@ -35,12 +29,12 @@ public class PanelTriangle extends JPanel {
 	public void paintComponent(Graphics objGraphics) {
 
 		try {
-			int topX = this.X;
-			int topY = this.Y - 40;
-			int leftX = this.X - 40;
-			int leftY = this.Y + 40;
-			int rightX = this.X + 40;
-			int rightY = this.Y + 40;
+			int topX = X;
+			int topY = Y - 40;
+			int leftX = X - 40;
+			int leftY = Y + 40;
+			int rightX = X + 40;
+			int rightY = Y + 40;
 			int dotDiameter = (leftY - topY)/10;
 			int dotToCornerDistance = (leftY - topY)/10;
 			int dotRadius = (leftY - topY)/20;
