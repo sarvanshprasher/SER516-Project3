@@ -16,7 +16,6 @@ public class PanelToolkit extends JPanel {
 	public PanelToolkit() {
 
 		String[] classNames = new String[] { "Circle", "Rectangle", "Square", "Triangle" };
-		
 		for (int i = 0; i < classNames.length; i++) {
 			try {
 				Class<?> tabClass = Class.forName("Panel" + classNames[i]);

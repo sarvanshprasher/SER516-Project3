@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputAdapter;
 
 /**
  * @author abhinaw sarang
@@ -34,6 +36,9 @@ public class DrawShapeOnMouseClick extends JPanel {
 	private Boolean secondPoint = false;
 	private Point firstPointLocation;
 	private Point secondPointLocation;
+	
+	
+	public MouseEvent dragStartEvent;
 
 	public DrawShapeOnMouseClick() {
 
@@ -43,6 +48,7 @@ public class DrawShapeOnMouseClick extends JPanel {
 		this.setPreferredSize(new Dimension(1600, 800));
 		this.setVisible(true);
 		addMouseListener(new DrawBoardMouseListener());
+		addMouseMotionListener(new Abcd());
 	}
 
 	@Override
@@ -135,47 +141,56 @@ public class DrawShapeOnMouseClick extends JPanel {
 				}
 			}
 		}
-
+		
 		@Override
 		public void mousePressed(MouseEvent event) {
-			if (!firstPoint) {
-				try {
-					for (Point point : shapeOrigin.keySet()) {
-						if (new Rectangle2D.Double(event.getX() - 80, event.getY() - 80, 120, 120).contains(point)) {
-							draggedShapeName = shapeOrigin.get(point);
-							shapeOrigin.remove(point);
-							break;
-						}
-					}
-					for (Point point : circlePoints) {
-						if (new Rectangle2D.Double(event.getX() - 80, event.getY() - 80, 120, 120).contains(point)) {
-							System.out.println("Removing point from circle" + point);
-							circlePoints.remove(point);
-							break;
-						}
-					}
-					for (Point point : trianglePoints) {
-						if (new Rectangle2D.Double(event.getX() - 80, event.getY() - 80, 120, 120).contains(point)) {
-							System.out.println("Removing point from triangle" + point);
-							trianglePoints.remove(point);
-							break;
-						}
-					}
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
-			}
+			System.out.println("Inside mouse pressed");
+			dragStartEvent = event;
 		}
-
+		
 		@Override
 		public void mouseReleased(MouseEvent event) {
 			if (!firstPoint) {
 				try {
 					shapeOrigin.put(new Point(event.getX(), event.getY()), draggedShapeName);
+					draggedShapeName = "";
 					repaint();
 				} catch (Exception ex) {
 					System.out.println(ex.getMessage());
 				}
+			}
+		}
+	}
+	
+	
+	private class Abcd extends MouseMotionAdapter {
+		@Override
+		public void mouseDragged(MouseEvent event) {
+			System.out.println("Inside mouse dragged");
+			try {
+				for (Point point : shapeOrigin.keySet()) {
+					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
+						draggedShapeName = shapeOrigin.get(point);
+						shapeOrigin.remove(point);
+						break;
+					}
+				}
+				for (Point point : circlePoints) {
+					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
+						System.out.println("Removing point from circle" + point);
+						circlePoints.remove(point);
+						break;
+					}
+				}
+				for (Point point : trianglePoints) {
+					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
+						System.out.println("Removing point from triangle" + point);
+						trianglePoints.remove(point);
+						break;
+					}
+				}
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
 			}
 		}
 	}
