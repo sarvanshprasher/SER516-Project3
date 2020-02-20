@@ -36,6 +36,7 @@ public class DrawShapeOnMouseClick extends JPanel {
 	
 	
 	public MouseEvent dragStartEvent;
+	public Point prevPoint = new Point();
 	public DrawShapes drawShapes = new DrawShapes();
 
 	public DrawShapeOnMouseClick() {
@@ -65,21 +66,15 @@ public class DrawShapeOnMouseClick extends JPanel {
 			}
 			for(Point p1 : ShapeLocation.circlePoint) {
 				graphicsDimension.drawOval(p1.x-40, p1.y-40, 80, 80);
-				graphicsDimension.fillOval(p1.x-3, p1.y-3, 6, 6);
 			}
 			for(Point p1 : ShapeLocation.trianglePoint) {
 				graphicsDimension.drawPolygon(new int[] { p1.x - 40, p1.x, p1.x + 40 },
 						new int[] { p1.y + 40, p1.y - 40, p1.y + 40 }, 3);
-				
-				graphicsDimension.fillOval(p1.x - 4, p1.y - 40 + 8 - 4,
-						8, 8);
-				graphicsDimension.fillOval(p1.x - 40 + 8 - 4,
-						p1.y + 40 - 8 - 4, 8, 8);
-				graphicsDimension.fillOval(p1.x + 40 - 8 - 4,
-						p1.y + 40 - 8 - 4, 8, 8);
+			}
+			for(Point p : ShapeLocation.pointsPoint) {
+				graphicsDimension.fillOval(p.x, p.y, 6, 6);
 			}
 			for(Lineconnection line : ShapeLocation.LinePoint) {
-				//graphicsDimension.drawRect(p1.x, p1.y, 100, 100);
 				graphicsDimension.drawLine(line.P1.x, line.P1.y, line.P2.x, line.P2.y);
 			}
 		} catch (Exception ex) {
@@ -151,10 +146,21 @@ public class DrawShapeOnMouseClick extends JPanel {
 				try {
 					if (draggedShapeName.equalsIgnoreCase("triangle")) {
 						ShapeLocation.trianglePoint.add(new Point(event.getX(), event.getY()));
+						//ShapeLocation.pointsPoint.add(new Point(event.getX(), event.getY()));
+						ShapeLocation.pointsPoint.add(new Point(event.getX() - 4, event.getY() - 40 + 8 - 4));
+						ShapeLocation.pointsPoint.add(new Point(event.getX()  - 40 + 8 - 4, event.getY() + 40 - 8 - 4));
+						ShapeLocation.pointsPoint.add(new Point(event.getX() + 40 - 8 - 4, event.getY() + 40 - 8 - 4));
 					} else if (draggedShapeName.equalsIgnoreCase("square")) {
 						ShapeLocation.squarePoint.add(new Point(event.getX(), event.getY()));
 					} else if (draggedShapeName.equalsIgnoreCase("circle")) {
 						ShapeLocation.circlePoint.add(new Point(event.getX(), event.getY()));
+						ShapeLocation.pointsPoint.add(new Point(event.getX(), event.getY()));
+						if (prevPoint.x != 0) {
+							Point newDot = new Point(event.getX(), event.getY());
+							Lineconnection objLC = new Lineconnection(prevPoint, newDot);
+							ShapeLocation.LinePoint.add(objLC);
+							prevPoint = null;
+						}
 					}
 					draggedShapeName = "";
 				} catch (Exception ex) {
@@ -196,6 +202,15 @@ public class DrawShapeOnMouseClick extends JPanel {
 					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
 						System.out.println("Removing point from circle" + point);
 						ShapeLocation.pointsPoint.remove(point);
+						for (Lineconnection lc : ShapeLocation.LinePoint) {
+							if (lc.P1.equals(point)) {
+								prevPoint = lc.P2;
+								ShapeLocation.LinePoint.remove(lc);
+							} else if (lc.P2.equals(point)) {
+								prevPoint = lc.P1;
+								ShapeLocation.LinePoint.remove(lc);
+							}
+						}
 						break;
 					}
 				}
