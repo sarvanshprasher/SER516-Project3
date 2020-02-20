@@ -25,7 +25,8 @@ public class PanelTriangle extends JPanel {
 		objTrianglePane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		objTrianglePane.setLayout(null);
 	}
-
+	
+	@Override
 	public void paintComponent(Graphics objGraphics) {
 
 		try {

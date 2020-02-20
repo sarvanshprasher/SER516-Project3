@@ -25,6 +25,7 @@ public class PanelRectangle extends JPanel {
 		objRectanglePane.setLayout(null);
 	}
 
+	@Override
 	public void paintComponent(Graphics objGraphics) {
 
 		try {

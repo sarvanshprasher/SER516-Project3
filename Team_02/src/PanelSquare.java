@@ -27,7 +27,8 @@ public class PanelSquare extends JPanel {
 		objSquarePane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		objSquarePane.setLayout(null);
 	}
-
+	
+	@Override
 	public void paintComponent(Graphics objGraphics) {
 
 		try {

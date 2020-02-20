@@ -27,11 +27,8 @@ public class DrawShapeOnMouseClick extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private Map<Point, String> shapeOrigin;
 	private String selectedShapeName;
 	private String draggedShapeName = "";
-	private List<Point> trianglePoints;
-	private List<Point> circlePoints;
 	private Boolean firstPoint = false;
 	private Boolean secondPoint = false;
 	private Point firstPointLocation;
@@ -39,21 +36,18 @@ public class DrawShapeOnMouseClick extends JPanel {
 	
 	
 	public MouseEvent dragStartEvent;
+	public DrawShapes drawShapes = new DrawShapes();
 
 	public DrawShapeOnMouseClick() {
-
-		shapeOrigin = new HashMap<>();
-		trianglePoints = new ArrayList<>();
-		circlePoints = new ArrayList<>();
 		this.setPreferredSize(new Dimension(1600, 800));
 		this.setVisible(true);
 		addMouseListener(new DrawBoardMouseListener());
 		addMouseMotionListener(new Abcd());
 	}
-
+	
 	@Override
 	public void paintComponent(Graphics graphics) {
-
+		System.out.println("Inside paint component.....");
 		try {
 			super.paintComponent(graphics);
 			Graphics2D graphicsDimension = (Graphics2D) graphics;
@@ -66,36 +60,23 @@ public class DrawShapeOnMouseClick extends JPanel {
 				firstPoint = false;
 				secondPoint = false;
 			}
-			for (Point p1 : shapeOrigin.keySet()) {
-				String currShape = shapeOrigin.get(p1);
-				System.out.println("Curr Shape...." + currShape);
-				if (currShape.equalsIgnoreCase("rectangle")) {
-					graphicsDimension.drawRect(p1.x, p1.y, 100, 80);
-				} else if (currShape.equalsIgnoreCase("square")) {
-					graphicsDimension.drawRect(p1.x, p1.y, 80, 80);
-				} else if (currShape.equalsIgnoreCase("circle")) {
-					graphicsDimension.drawOval(p1.x-40, p1.y-40, 80, 80);
-					graphicsDimension.fillOval(p1.x-3, p1.y-3, 6, 6);
-					System.out.println("Adding point to circle");
-					circlePoints.add(new Point(p1.x-3, p1.y-3));
-				} else if (currShape.equalsIgnoreCase("triangle")) {
-					graphicsDimension.drawPolygon(new int[] { p1.x - 40, p1.x, p1.x + 40 },
-							new int[] { p1.y + 40, p1.y - 40, p1.y + 40 }, 3);
-					
-					graphicsDimension.fillOval(p1.x - 4, p1.y - 40 + 8 - 4,
-							8, 8);
-					graphicsDimension.fillOval(p1.x - 40 + 8 - 4,
-							p1.y + 40 - 8 - 4, 8, 8);
-					graphicsDimension.fillOval(p1.x + 40 - 8 - 4,
-							p1.y + 40 - 8 - 4, 8, 8);
-					
-					System.out.println("Adding point to triangle");
-					trianglePoints.add(new Point(p1.x - 4, p1.y - 40 + 8 - 4));
-					trianglePoints.add(new Point(p1.x - 40 + 8 - 4, p1.y + 40 - 8 - 4));
-					trianglePoints.add(new Point(p1.x + 40 - 8 - 4, p1.y + 40 - 8 - 4));
-				} else {
-					System.out.println("Shape not selected");
-				}
+			for(Point p1 : ShapeLocation.squarePoint) {
+				graphicsDimension.drawRect(p1.x, p1.y, 100, 100);
+			}
+			for(Point p1 : ShapeLocation.circlePoint) {
+				graphicsDimension.drawOval(p1.x-40, p1.y-40, 80, 80);
+				graphicsDimension.fillOval(p1.x-3, p1.y-3, 6, 6);
+			}
+			for(Point p1 : ShapeLocation.trianglePoint) {
+				graphicsDimension.drawPolygon(new int[] { p1.x - 40, p1.x, p1.x + 40 },
+						new int[] { p1.y + 40, p1.y - 40, p1.y + 40 }, 3);
+				
+				graphicsDimension.fillOval(p1.x - 4, p1.y - 40 + 8 - 4,
+						8, 8);
+				graphicsDimension.fillOval(p1.x - 40 + 8 - 4,
+						p1.y + 40 - 8 - 4, 8, 8);
+				graphicsDimension.fillOval(p1.x + 40 - 8 - 4,
+						p1.y + 40 - 8 - 4, 8, 8);
 			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
@@ -106,11 +87,8 @@ public class DrawShapeOnMouseClick extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			List<Point> allPoints = new ArrayList<>();
-			allPoints.addAll(trianglePoints);
-			allPoints.addAll(circlePoints);
 			boolean selectingSecond = firstPoint;
-			for (Point point : allPoints) {
+			for (Point point : ShapeLocation.pointsPoint) {
 				if (new Rectangle2D.Double(event.getX() - 10, event.getY() - 10, 20, 20).contains(point)) {
 					if(!firstPoint) {
 						firstPoint = true;
@@ -124,6 +102,8 @@ public class DrawShapeOnMouseClick extends JPanel {
 			}
 			if (firstPoint && secondPoint) {
 				repaint();
+				// TODO
+				// Add lines to list
 			} else if ((!firstPoint) || (selectingSecond && !secondPoint)) {
 				firstPoint = false;
 				secondPoint = false;
@@ -133,7 +113,21 @@ public class DrawShapeOnMouseClick extends JPanel {
 						System.out.println("selectedShapeName");
 						JOptionPane.showMessageDialog(null, "Please select a shape");
 					} else {
-						shapeOrigin.put(new Point(event.getX(), event.getY()), selectedShapeName);
+						int X = event.getX();
+						int Y = event.getY();
+						if (selectedShapeName.equalsIgnoreCase("triangle")) {
+							ShapeLocation.trianglePoint.add((new Point(X, Y)));
+							ShapeLocation.pointsPoint.add(new Point(X - 4, Y - 40 + 8 - 4));
+							ShapeLocation.pointsPoint.add(new Point(X - 40 + 8 - 4, Y + 40 - 8 - 4));
+							ShapeLocation.pointsPoint.add(new Point(X + 40 - 8 - 4, Y + 40 - 8 - 4));
+						} else if (selectedShapeName.equalsIgnoreCase("circle")) {
+							ShapeLocation.circlePoint.add((new Point(X, Y)));
+							ShapeLocation.pointsPoint.add(new Point(X-3, Y-3));
+						} else if (selectedShapeName.equalsIgnoreCase("square")) {
+							ShapeLocation.squarePoint.add((new Point(X, Y)));
+						} else {
+							System.out.println("Shape not selected");
+						}
 						repaint();
 					}
 				} catch (Exception e1) {
@@ -150,15 +144,19 @@ public class DrawShapeOnMouseClick extends JPanel {
 		
 		@Override
 		public void mouseReleased(MouseEvent event) {
-			if (!firstPoint) {
 				try {
-					shapeOrigin.put(new Point(event.getX(), event.getY()), draggedShapeName);
+					if (draggedShapeName.equalsIgnoreCase("triangle")) {
+						ShapeLocation.trianglePoint.add(new Point(event.getX(), event.getY()));
+					} else if (draggedShapeName.equalsIgnoreCase("square")) {
+						ShapeLocation.squarePoint.add(new Point(event.getX(), event.getY()));
+					} else if (draggedShapeName.equalsIgnoreCase("circle")) {
+						ShapeLocation.circlePoint.add(new Point(event.getX(), event.getY()));
+					}
 					draggedShapeName = "";
-					repaint();
 				} catch (Exception ex) {
 					System.out.println(ex.getMessage());
 				}
-			}
+			repaint();
 		}
 	}
 	
@@ -168,24 +166,32 @@ public class DrawShapeOnMouseClick extends JPanel {
 		public void mouseDragged(MouseEvent event) {
 			System.out.println("Inside mouse dragged");
 			try {
-				for (Point point : shapeOrigin.keySet()) {
+				for (Point point : ShapeLocation.circlePoint) {
 					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
-						draggedShapeName = shapeOrigin.get(point);
-						shapeOrigin.remove(point);
+						draggedShapeName = "circle";
+						ShapeLocation.circlePoint.remove(point);
 						break;
 					}
 				}
-				for (Point point : circlePoints) {
+				for (Point point : ShapeLocation.trianglePoint) {
+					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
+						draggedShapeName = "triangle";
+						ShapeLocation.trianglePoint.remove(point);
+						break;
+					}
+				}
+				for (Point point : ShapeLocation.squarePoint) {
+					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
+						draggedShapeName = "square";
+						ShapeLocation.squarePoint.remove(point);
+						break;
+					}
+				}
+
+				for (Point point : ShapeLocation.pointsPoint) {
 					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
 						System.out.println("Removing point from circle" + point);
-						circlePoints.remove(point);
-						break;
-					}
-				}
-				for (Point point : trianglePoints) {
-					if (new Rectangle2D.Double(dragStartEvent.getX() - 80, dragStartEvent.getY() - 80, 120, 120).contains(point)) {
-						System.out.println("Removing point from triangle" + point);
-						trianglePoints.remove(point);
+						ShapeLocation.pointsPoint.remove(point);
 						break;
 					}
 				}
@@ -195,3 +201,4 @@ public class DrawShapeOnMouseClick extends JPanel {
 		}
 	}
 }
+

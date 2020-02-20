@@ -25,6 +25,7 @@ public class PanelCircle extends JPanel {
 		objCirclePane.setLayout(null);
 	}
 
+	@Override
 	public void paintComponent(Graphics objGraphics) {
 
 		try {
