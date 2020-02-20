@@ -62,7 +62,9 @@ public class DrawShapeOnMouseClick extends JPanel {
 				secondPoint = false;
 			}
 			for(Point p1 : ShapeLocation.squarePoint) {
-				graphicsDimension.drawRect(p1.x, p1.y, 100, 100);
+				graphicsDimension.drawRect(p1.x, p1.y, 100, 100);				
+				graphicsDimension.drawLine(p1.x +5 , p1.y+10, p1.x +5, p1.y+70);
+				graphicsDimension.drawLine(p1.x +75 , p1.y+10, p1.x +75, p1.y+70);
 			}
 			for(Point p1 : ShapeLocation.circlePoint) {
 				graphicsDimension.drawOval(p1.x-40, p1.y-40, 80, 80);
