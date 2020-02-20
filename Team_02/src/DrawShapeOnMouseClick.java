@@ -78,6 +78,10 @@ public class DrawShapeOnMouseClick extends JPanel {
 				graphicsDimension.fillOval(p1.x + 40 - 8 - 4,
 						p1.y + 40 - 8 - 4, 8, 8);
 			}
+			for(Lineconnection line : ShapeLocation.LinePoint) {
+				//graphicsDimension.drawRect(p1.x, p1.y, 100, 100);
+				graphicsDimension.drawLine(line.P1.x, line.P1.y, line.P2.x, line.P2.y);
+			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
